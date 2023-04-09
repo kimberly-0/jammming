@@ -13,19 +13,22 @@ class App extends React.Component {
                     id: 1,
                     name: 'Hello',
                     artist: 'Adele',
-                    album: 'Idk'
+                    album: 'Idk',
+                    uri: 'uri 1'
                 },
                 {
                     id: 2,
                     name: 'Coffee',
                     artist: 'In need',
-                    album: 'Mornings'
+                    album: 'Mornings',
+                    uri: 'uri 2'
                 },
                 {
                     id: 3,
                     name: 'Test',
                     artist: 'Yess',
-                    album: 'Okay'
+                    album: 'Okay',
+                    uri: 'uri 3'
                 },
             ],
             playlistName: "My playlist",
@@ -34,7 +37,8 @@ class App extends React.Component {
                     id: 3,
                     name: 'Test',
                     artist: 'Yess',
-                    album: 'Okay'
+                    album: 'Okay',
+                    uri: 'uri 3'
                 }
             ]
         }
@@ -42,6 +46,8 @@ class App extends React.Component {
         this.addTrack = this.addTrack.bind(this);
         this.removeTrack = this.removeTrack.bind(this);
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
+        this.savePlaylist = this.savePlaylist.bind(this);
+        this.search = this.search.bind(this);
     }
 
     addTrack(track) {
@@ -67,13 +73,27 @@ class App extends React.Component {
             playlistName: newName
         })
     }
+
+    savePlaylist() {
+        const trackURIs = [];
+        this.state.playlistTracks.forEach(track => {
+            trackURIs.push("URIs: " + track.uri);
+        })
+        console.log(trackURIs); // TO DELETE !!!
+    }
+
+    search(term) {
+        console.log("search term: " + term); // TO DELETE !!!
+    }
     
     render() {
         return (
             <div>
                 <h1>Ja<span className="highlight">mmm</span>ing</h1>
                 <div className="App">
-                    <SearchBar />
+                    <SearchBar
+                        onSearch={this.search} 
+                    />
                     <div className="App-playlist">
                         <SearchResults 
                             searchResults={this.state.searchResults} 
@@ -84,6 +104,7 @@ class App extends React.Component {
                             playlistTracks={this.state.playlistTracks} 
                             onRemove={this.removeTrack}
                             onNameChange={this.updatePlaylistName} 
+                            onSave={this.savePlaylist} 
                         />
                     </div>
                 </div>
