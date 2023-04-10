@@ -1,6 +1,6 @@
 let userAccessToken = '';
 const clientID = ''; // Client ID here
-const redirectURI = 'http://localhost:3000/';
+const redirectURI = 'http://jammming-codecademy-kim.surge.sh/';
 
 const Spotify = {
     getAccessToken() {
