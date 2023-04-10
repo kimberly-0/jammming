@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
@@ -9,47 +10,22 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // searchTerm: '',
-            searchResults: [
-                {
-                    id: 1,
-                    name: 'Hello',
-                    artist: 'Adele',
-                    album: 'Idk',
-                    uri: 'uri 1'
-                },
-                {
-                    id: 2,
-                    name: 'Coffee',
-                    artist: 'In need',
-                    album: 'Mornings',
-                    uri: 'uri 2'
-                },
-                {
-                    id: 3,
-                    name: 'Test',
-                    artist: 'Yess',
-                    album: 'Okay',
-                    uri: 'uri 3'
-                },
-            ],
+            searchResults: [],
             playlistName: "My playlist",
-            playlistTracks: [
-                {
-                    id: 3,
-                    name: 'Test',
-                    artist: 'Yess',
-                    album: 'Okay',
-                    uri: 'uri 3'
-                }
-            ]
+            playlistTracks: []
         }
 
+        this.searchSpotify = this.searchSpotify.bind(this);
         this.addTrack = this.addTrack.bind(this);
         this.removeTrack = this.removeTrack.bind(this);
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
         this.savePlaylist = this.savePlaylist.bind(this);
-        this.searchSpotify = this.searchSpotify.bind(this);
+    }
+
+    searchSpotify(term) {
+        Spotify.search(term).then(results => {
+            this.setState({searchResults: results});
+        });
     }
 
     addTrack(track) {
@@ -58,39 +34,30 @@ class App extends React.Component {
         }
         const newPlaylistTracksArray = this.state.playlistTracks;
         newPlaylistTracksArray.push(track);
-        this.setState({
-            playlistTracks: newPlaylistTracksArray
-        })
+        this.setState({playlistTracks: newPlaylistTracksArray});
     }
 
     removeTrack(track) {
         const newPlaylistTracksArray = this.state.playlistTracks.filter(savedTrack => savedTrack.id !== track.id);
-        this.setState({
-            playlistTracks: newPlaylistTracksArray
-        })
+        this.setState({playlistTracks: newPlaylistTracksArray});
     }
 
     updatePlaylistName(newName) {
-        this.setState({
-            playlistName: newName
-        })
+        this.setState({playlistName: newName});
     }
 
     savePlaylist() {
-        const trackURIs = [];
-        this.state.playlistTracks.forEach(track => {
-            trackURIs.push("URIs: " + track.uri);
-        })
-        console.log(trackURIs); // TO DELETE !!!
-    }
-
-    searchSpotify(term) {
-        const results = Spotify.search(term).then(results => {
-            // console.log("results: " + JSON.stringify(results)); // TO DELETE !!!
-            this.setState({
-                searchResults: results
-            })
-        });
+        const trackURIs = this.state.playlistTracks.map(track => track.uri);
+        try {
+            Spotify.savePlaylist(this.state.playlistName, trackURIs).then(() => {
+                this.setState({
+                    playlistName: 'New Playlist',
+                    playlistTracks: []
+                });
+            });
+        } catch(error) {
+            console.log(error.message);
+        }
     }
     
     render() {
